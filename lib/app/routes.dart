@@ -5,3 +5,5 @@ const String settingsScreen = '/settings';
 const String reviewsScreen = '/reviews';
 const String favoritosScreen = '/favoritos';
 String profileScreen = '/perfil';
+
+const String loginRegisterScreen = '/LoginRegisterScreen';
