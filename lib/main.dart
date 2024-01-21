@@ -1,4 +1,7 @@
+// ignore_for_file: avoid_print
+
 import 'package:flutter/material.dart';
+import 'package:game_shop/screens/auth/registerNewScreen.dart';
 import 'package:provider/provider.dart';
 import 'package:game_shop/widgets/bottom_navigation_bar.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -26,7 +29,7 @@ void main() async {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => AppState()),
-        Provider<AuthService>(create: (context) => AuthService()),
+        ChangeNotifierProvider(create: (context) => AuthService()),
       ],
       child: GameShop(),
     ),
@@ -40,6 +43,7 @@ class GameShop extends StatefulWidget {
     'Favoritos',
     'Perfil',
     'Login',
+    'Novo Usuário',
   ];
   @override
   State<GameShop> createState() => _MyWidgetState();
@@ -57,9 +61,9 @@ class _MyWidgetState extends State<GameShop> {
     authService = Provider.of<AuthService>(context, listen: false);
 
     // Adicione mensagens de depuração
-    print("Init State called. Current User: ${authService.currentUser}");
+    print("Init State called. Current User: ${authService.token}");
 
-    if (authService.currentUser == null) {
+    if (authService.token == null) {
       _currentIndex = 0; // Defina o índice quando não estiver logado
       print("User not logged in. Setting _currentIndex to -1");
     } else {
@@ -70,12 +74,19 @@ class _MyWidgetState extends State<GameShop> {
 
   @override
   Widget build(BuildContext context) {
+    // Verificar se o usuário está logado
+    final authService = Provider.of<AuthService>(context);
     // Se não estiver logado, mostre apenas a tela de login/registrar
-    if (authService.currentUser == null) {
+    if (authService.token == null) {
       return MaterialApp(
+        routes: {
+          '/loginRegisterNewScreen': (context) => LoginRegisterScreen(),
+          '/registerNewScreen': (context) => RegisterNewScreen(),
+          '/homeScreen': (context) => HomeScreen(),
+        },
         home: Scaffold(
           appBar: AppBar(
-            title: const Text('Login / Registro'),
+            title: const Text('Entrar'),
           ),
           body: IndexedStack(
             index: _currentIndex,

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "995101928997",
+    "project_id": "gameshop-410503",
+    "storage_bucket": "gameshop-410503.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:995101928997:android:166f3d98c642a0b31b19cc",
+        "android_client_info": {
+          "package_name": "com.example.GameShop"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDVeXopsmKU_uBFfJpCg_KV929eZ5S0FNI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

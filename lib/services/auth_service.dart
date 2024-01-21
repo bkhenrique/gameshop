@@ -1,21 +1,41 @@
+// ignore_for_file: avoid_print
 import 'dart:convert';
-import 'package:http/http.dart'
-    as http; // Adicione esta linha para importar a biblioteca http
+import 'package:game_shop/services/api_service.dart';
+import 'package:http/http.dart' as http;
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:flutter/foundation.dart';
 
-class AuthService {
-  final storage = const FlutterSecureStorage();
-
+class AuthService with ChangeNotifier {
+  final FlutterSecureStorage _storage = const FlutterSecureStorage();
   String? _token;
-  String? user; // Add this line to define the user variable
+
+  AuthService() {
+    _loadToken();
+  }
 
   String? get token => _token;
-  String? get currentUser => _getCurrentUser();
+
+  bool get isUserLoggedIn => _token != null;
+
+  Future<void> setUser(String token) async {
+    _token = token;
+    await _storage.write(key: 'auth_token', value: token);
+    notifyListeners(); // Notificar os ouvintes sobre a mudança
+    print('dentro do auth: ${token}');
+
+    notifyListeners();
+  }
+
+  Future<void> logout() async {
+    _token = null;
+    await _storage.delete(key: 'auth_token');
+    notifyListeners();
+  }
 
   Future<void> loginWithGoogle() async {
-    final googleAuthUrl =
-        Uri.parse('http://127.0.0.1:8000/api/auth/google/redirect');
+    final googleAuthUrl = Uri.parse(ApiConfig.googleAuthRedirect);
+
     print("url google pressionada");
     print("url google pressionada ${googleAuthUrl}");
 
@@ -28,11 +48,12 @@ class AuthService {
   }
 
   Future<void> loginWithFacebook() async {
-    final facebookAuthUrl = 'http://127.0.0.1:8000/api/auth/facebook/redirect';
+    final facebookAuthUrl =
+        Uri.parse('${ApiConfig.apiEndpoint}/auth/facebook/redirect');
 
     print("url facebook precionada");
     try {
-      await launch(facebookAuthUrl);
+      await launchUrl(facebookAuthUrl);
     } catch (e) {
       throw 'Could not launch $facebookAuthUrl';
     }
@@ -50,57 +71,36 @@ class AuthService {
     }
   }
 
-  Future<void> handleAuthRedirect(Uri redirectedUri) async {
-    final token = await getTokenFromRedirect(redirectedUri);
-
-    if (token != null) {
-      await _saveToken(token);
-      _token = token;
-    } else {
-      throw 'Token not found in the redirected URL';
-    }
-  }
-
   Future<String?> getTokenFromRedirect(Uri redirectedUri) async {
     // Lógica para extrair o token da URL de redirecionamento
     // ...
 
-    return 'example_token'; // Substitua isso pela lógica real para obter o token
-  }
-
-  Future<void> _saveToken(String token) async {
-    await storage.write(key: 'auth_token', value: token);
-  }
-
-  Future<void> _loadToken() async {
-    _token = await storage.read(key: 'auth_token');
-  }
-
-  String? _getCurrentUser() {
-    return user;
+    return token; // Substitua isso pela lógica real para obter o token
   }
 
   Future<UserDetails?> getCurrentUserDetails() async {
-    await _loadToken(); // Carrega o token ao obter detalhes do usuário
+    await _loadToken();
+    if (_token == null) return null;
 
-    if (_token != null) {
-      try {
-        final response = await http.get(
-            Uri.parse('http://127.0.0.1:8000/api/usuariosS'),
-            headers: {'Authorization': 'Bearer $_token'});
-
-        if (response.statusCode == 200) {
-          final Map<String, dynamic> userData = json.decode(response.body);
-          return UserDetails.fromMap(userData);
-        } else {
-          throw 'Failed to get user details: ${response.statusCode}';
-        }
-      } catch (e) {
-        throw 'Error getting user details: $e';
+    try {
+      final response = await http.get(
+        Uri.parse('${ApiConfig.apiEndpoint}/usuarios'),
+        headers: {'Authorization': 'Bearer $_token'},
+      );
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> userData = json.decode(response.body);
+        return UserDetails.fromMap(userData);
+      } else {
+        throw 'Failed to get user details: ${response.statusCode}';
       }
-    } else {
-      return null;
+    } catch (e) {
+      throw 'Error getting user details: $e';
     }
+  }
+
+  // Método auxiliar para carregar o token do armazenamento seguro
+  Future<void> _loadToken() async {
+    _token = await _storage.read(key: 'auth_token');
   }
 }
 

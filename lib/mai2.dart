@@ -185,7 +185,6 @@ class _MyWidgetState extends State<GameShop> {
             HomeScreen(),
             FavoritosScreen(),
             ProfileScreen(),
-            LoginRegisterScreen(),
           ],
         ),
       );

@@ -56,18 +56,20 @@ class _FavoritosScreenState extends State<FavoritosScreen> {
                   child: TextField(
                     controller: valorMinimoController,
                     keyboardType: TextInputType.number,
-                    decoration: InputDecoration(labelText: 'Valor Mínimo'),
+                    decoration:
+                        const InputDecoration(labelText: 'Valor Mínimo'),
                     style: TextStyle(
                       color: appState.isDarkMode ? Colors.white : Colors.black,
                     ),
                   ),
                 ),
-                SizedBox(width: 10),
+                const SizedBox(width: 10),
                 Expanded(
                   child: TextField(
                     controller: valorMaximoController,
                     keyboardType: TextInputType.number,
-                    decoration: InputDecoration(labelText: 'Valor Máximo'),
+                    decoration:
+                        const InputDecoration(labelText: 'Valor Máximo'),
                     style: TextStyle(
                       color: appState.isDarkMode ? Colors.white : Colors.black,
                     ),
@@ -75,7 +77,7 @@ class _FavoritosScreenState extends State<FavoritosScreen> {
                 ),
               ],
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             ElevatedButton(
               onPressed: () {
                 // Lógica de filtragem melhorada
@@ -101,16 +103,16 @@ class _FavoritosScreenState extends State<FavoritosScreen> {
                   }
                 });
               },
-              child: Text('Aplicar Filtro'),
+              child: const Text('Aplicar Filtro'),
             ),
             ElevatedButton(
               onPressed: () {
                 // Função para limpar o filtro
                 _limparFiltro();
               },
-              child: Text('Limpar Filtro'),
+              child: const Text('Limpar Filtro'),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             Expanded(
               child: ListView.builder(
                 itemCount: favoritos.length,
