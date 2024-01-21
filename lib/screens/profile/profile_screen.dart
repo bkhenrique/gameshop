@@ -16,9 +16,9 @@ class ProfileScreen extends StatelessWidget {
   // Esta função busca os dados do usuário a partir do token JWT
   Future<Map<String, dynamic>?> fetchUserData(String token) async {
     Map<String, dynamic> payload = Jwt.parseJwt(token);
-    String userId = payload['id']; // ou a chave apropriada para o ID do usuário
+    String userId = payload['sub']; // Ajuste para o campo correto do seu JWT
 
-    var url = Uri.parse('${ApiConfig.apiEndpoint}/usuario/$userId');
+    var url = Uri.parse('${ApiConfig.apiEndpoint}/usuarios/$userId');
     var response = await http.get(
       url,
       headers: {
@@ -27,9 +27,10 @@ class ProfileScreen extends StatelessWidget {
     );
 
     if (response.statusCode == 200) {
-      return json.decode(response.body); // Retorna os dados do usuário
+      print(response.body);
+      return json.decode(response.body);
     } else {
-      return null; // Retorna nulo em caso de erro
+      return null;
     }
   }
 
@@ -66,13 +67,10 @@ class ProfileScreen extends StatelessWidget {
 
         // Aqui você pode acessar os dados do usuário que foram carregados
         Map<String, dynamic> userData = snapshot.data!;
-        var profileData = ProfileData(
-          name: userData['name'], // Substitua pelos campos corretos
-          email: userData['email'], // Substitua pelos campos corretos
-          userType: UserType.buyer, // Substitua pela lógica real
-          visibleData: ['Name', 'E-mail', 'Type'],
-          verified: userData['verified'] ?? false, // Substitua pela lógica real
-        );
+        var name = userData['nome'] ?? 'Nome não disponível';
+        var email = userData['email'] ?? 'Email não disponível';
+        var userType = userData['tipo_usuario'] ?? 'Tipo não disponível';
+        var verified = userData['verificado'] == 1;
 
         return Scaffold(
           body: Padding(
@@ -80,11 +78,29 @@ class ProfileScreen extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Name: ${profileData.name}'),
-                Text('E-mail: ${profileData.email}'),
-                Text('User Type: ${profileData.userType}'),
-                Text('Visible Data: ${profileData.visibleData.join(', ')}'),
-                Text('Verified: ${profileData.verified ? 'Yes' : 'No'}'),
+                Text('ID: ${userData['id']}'),
+                Text('Nome: ${userData['nome']}'),
+                Text('Email: ${userData['email']}'),
+                if (userData['idade'] != null)
+                  Text('Idade: ${userData['idade']}'),
+                if (userData['data_nascimento'] != null)
+                  Text('Data de Nascimento: ${userData['data_nascimento']}'),
+                Text('Tipo de Usuário: ${userData['tipo_usuario']}'),
+                if (userData['avatar'] != null)
+                  Text('Avatar: ${userData['avatar']}'),
+                Text(
+                    'Verificado: ${userData['verificado'] == 1 ? 'Sim' : 'Não'}'),
+                if (userData['whatsapp'] != null)
+                  Text('WhatsApp: ${userData['whatsapp']}'),
+                if (userData['line'] != null) Text('Line: ${userData['line']}'),
+                if (userData['telegram'] != null)
+                  Text('Telegram: ${userData['telegram']}'),
+                if (userData['apelido'] != null)
+                  Text('Apelido: ${userData['apelido']}'),
+                if (userData['nome_revenda'] != null)
+                  Text('Nome Revenda: ${userData['nome_revenda']}'),
+                Text('Conta Criada em: ${userData['created_at']}'),
+                Text('Última Atualização: ${userData['updated_at']}'),
                 const SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: () {
