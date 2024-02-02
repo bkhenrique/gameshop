@@ -27,7 +27,6 @@ class ProfileScreen extends StatelessWidget {
     );
 
     if (response.statusCode == 200) {
-      print(response.body);
       return json.decode(response.body);
     } else {
       return null;
@@ -78,6 +77,10 @@ class ProfileScreen extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                Container(
+                  decoration: BoxDecoration(color: Colors.amberAccent[50]),
+                ),
+                Text('Bem Vindo: $name'),
                 Text('ID: ${userData['id']}'),
                 Text('Nome: ${userData['nome']}'),
                 Text('Email: ${userData['email']}'),
@@ -88,8 +91,7 @@ class ProfileScreen extends StatelessWidget {
                 Text('Tipo de Usuário: ${userData['tipo_usuario']}'),
                 if (userData['avatar'] != null)
                   Text('Avatar: ${userData['avatar']}'),
-                Text(
-                    'Verificado: ${userData['verificado'] == 1 ? 'Sim' : 'Não'}'),
+                Text('Verificado: ${verified == 1 ? 'Sim' : 'Não'}'),
                 if (userData['whatsapp'] != null)
                   Text('WhatsApp: ${userData['whatsapp']}'),
                 if (userData['line'] != null) Text('Line: ${userData['line']}'),

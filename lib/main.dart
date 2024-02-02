@@ -166,8 +166,10 @@ class _MyWidgetState extends State<GameShop> {
           },
         ),
         appBar: AppBar(
-          title: Text(
-            widget.pageTitles[_currentIndex],
+          title: Center(
+            child: Text(
+              widget.pageTitles[_currentIndex],
+            ),
           ),
           actions: [
             IconButton(

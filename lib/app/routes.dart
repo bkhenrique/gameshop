@@ -1,6 +1,6 @@
 const String homeScreen = '/home';
 const String adDetailsScreen = '/adDetails';
-String sellerAreaScreen = '/sellerAreaScreen';
+const String sellerAreaScreen = '/sellerAreaScreen';
 const String settingsScreen = '/settings';
 const String reviewsScreen = '/reviews';
 const String favoritosScreen = '/favoritos';

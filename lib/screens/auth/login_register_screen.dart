@@ -1,17 +1,45 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:game_shop/services/auth_service.dart';
 import 'package:provider/provider.dart';
 import 'package:game_shop/app/routes.dart';
 import 'package:game_shop/screens/auth/registerNewScreen.dart';
+import 'package:game_shop/services/api_service.dart';
+import 'package:game_shop/services/auth_service.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class LoginRegisterScreen extends StatelessWidget {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
   LoginRegisterScreen({Key? key}) : super(key: key);
 
   Future<void> _login(BuildContext context) async {
     // Aqui você pode adicionar a lógica de login
+    var url = Uri.parse('${ApiConfig.apiEndpoint}/auth/login');
+    var response = await http.post(
+      url,
+      body: {
+        'email': _emailController.text,
+        'password': _passwordController.text,
+      },
+    );
+    print('Response status: ${response.statusCode}');
+    print('Response body: ${response.body}');
+
+    if (response.statusCode == 200) {
+      var token = json.decode(response.body)['token'];
+      print('Response body: ${token}');
+
+      // Atualizar AuthService com o token
+      Provider.of<AuthService>(context, listen: false).setUser(token);
+      navigatorKey.currentState!.pushReplacementNamed('/homeScreen');
+    } else {
+      print('Erro ao registrar: ${response.body}');
+    }
     print('Login com email e senha');
   }
 

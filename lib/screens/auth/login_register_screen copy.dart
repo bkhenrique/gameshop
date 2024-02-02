@@ -86,7 +86,7 @@ class LoginRegisterScreen extends StatelessWidget {
           ),
           actions: <Widget>[
             ElevatedButton(
-              child: Text('Cancelar'),
+              child: const Text('Cancelar'),
               onPressed: () => Navigator.of(context).pop(),
             ),
             ElevatedButton(
